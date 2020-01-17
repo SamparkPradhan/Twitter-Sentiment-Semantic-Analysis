@@ -1,0 +1,7 @@
+('bus', 92)
+('economy', 73)
+('agriculture', 12)
+('population', 4)
+('oil', 211)
+('vehicle', 13)
+('expensive', 1)

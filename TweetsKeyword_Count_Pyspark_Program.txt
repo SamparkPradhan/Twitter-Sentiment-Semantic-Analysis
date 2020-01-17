@@ -1,0 +1,19 @@
+>>> myFile = sc.textFile("/home/ubuntu/server/allTweets/cleaned_tweets.csv")
+>>> myList = sc.parallelize(["oil","vehicle","university","dalhousie","expensive","good school","good schools","bad school","bad schools","poor schools","poor schools","population","bus","buses","agriculture","economy"])
+>>> keywords = myList.collect()
+>>> tweet = myFile.collect()
+>>> keyword_found = []
+>>> tweet_list = [i.split(',')[0] for i in tweet]
+>>> for i in tweet_list:
+...     for key in keywords:
+...             if key in i:
+...                     keyword_found.append(key)
+...
+>>> keyword_found
+['economy', 'bus', 'oil', 'population', 'economy', 'oil', 'oil', 'bus', 'oil', 'oil', 'bus', 'expensive', 'bus', 'bus', 'economy', 'bus', 'economy', 'economy', 'economy', 'bus', 'bus', 'oil', 'bus', 'economy', 'bus', 'bus', 'bus', 'bus', 'bus', 'bus', 'bus', 'bus', 'economy', 'bus', 'oil', 'bus', 'bus', 'economy', 'oil', 'population', 'population', 'bus', 'bus', 'economy', 'bus', 'bus', 'bus', 'economy', 'oil', 'oil', 'agriculture', 'bus', 'bus', 'economy', 'agriculture', 'bus', 'bus', 'bus', 'economy']
+>>> m  = sc.parallelize(keyword_found,2)
+>>> x = m.map(lambda x:(x,1))
+>>> y = x.map(lambda x:(x)).reduceByKey(lambda w1,w2:w1+w2)
+>>> y.collect()
+[('economy', 13), ('bus', 30), ('population', 3), ('agriculture', 2), ('oil', 10), ('expensive', 1)]
+>>> y.coalesce(1,True).saveAsTextFile("/home/ubuntu/server/allTweets/output_tweets/")

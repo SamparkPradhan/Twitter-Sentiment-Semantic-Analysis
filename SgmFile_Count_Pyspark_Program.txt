@@ -1,0 +1,17 @@
+>>> myFile = sc.textFile("/home/ubuntu/server/sgmfiles/*")
+>>> myList = sc.parallelize(["oil","vehicle","university","dalhousie","expensive","good school","good schools","bad school","bad schools","poor schools","poor schools","population","bus","buses","agriculture","economy"])
+>>> keywords = myList.collect()
+>>> sgmFiles = myFile.collect()
+>>> keyword_found = []
+>>> all_sgm_files = [i.split(',')[0] for i in sgmFiles]
+>>> for i in all_sgm_files:
+...     for key in keywords:
+...             if key in i:
+...                     keyword_found.append(key)
+...
+>>> m  = sc.parallelize(keyword_found,2)
+>>> x = m.map(lambda x:(x,1))
+>>> y = x.map(lambda x:(x)).reduceByKey(lambda w1,w2:w1+w2)
+>>> y.collect()
+[('economy', 13), ('bus', 30), ('population', 3), ('agriculture', 2), ('oil', 10), ('expensive', 1)]
+>>> y.coalesce(1,True).saveAsTextFile("/home/ubuntu/server/all_sgm_files/output_sgmfiles/")
